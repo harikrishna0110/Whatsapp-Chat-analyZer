@@ -1,5 +1,6 @@
 import pandas as pd
-import re
+
+from textblob import TextBlob
 
 import re
 
@@ -50,6 +51,7 @@ def create_dataframe(messages):
     df['Day_name'] = df['Datetime'].dt.day_name()
     df['Hour'] = df['Datetime'].dt.hour
     df['Minute'] = df['Datetime'].dt.minute
+    df['Sentiment'] = df['Message'].apply(lambda x: TextBlob(x).sentiment.polarity)
 
     period = []
     for hour in df[['Day_name', 'Hour']]['Hour']:

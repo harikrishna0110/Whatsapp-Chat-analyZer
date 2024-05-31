@@ -3,6 +3,8 @@ from wordcloud import wordcloud, WordCloud
 from collections import Counter
 import pandas as pd
 import regex as re
+from textblob import TextBlob
+
 
 extract = URLExtract()
 def fetch_stats(selected_user, df):
@@ -127,4 +129,46 @@ def activity_heatmap(selected_user,df):
     user_heatmap = df.pivot_table(index='Day_name', columns='period', values='Message', aggfunc='count').fillna(0)
 
     return user_heatmap
+
+
+def sentiment_analysis_df(selected_user, df, message_column='Message', user_column='Sender'):
+    """
+    Perform sentiment analysis on messages of a selected user from a DataFrame.
+
+    Args:
+    - selected_user (str): The user for whom sentiment analysis is to be performed.
+    - df (DataFrame): Input DataFrame containing messages.
+    - message_column (str, optional): Name of the column containing messages. Default is 'Message'.
+    - user_column (str, optional): Name of the column containing user names. Default is 'Sender'.
+
+    Returns:
+    - DataFrame: A pandas DataFrame containing the sentiment analysis scores for the selected user.
+    """
+    # Filter DataFrame for messages of the selected user
+    user_df = df[df[user_column] == selected_user]
+
+    # Initialize lists to store sentiment scores
+    polarities = []
+    subjectivities = []
+
+    # Perform sentiment analysis for each message
+    for message in user_df[message_column]:
+        blob = TextBlob(message)
+        polarities.append(blob.sentiment.polarity)
+        subjectivities.append(blob.sentiment.subjectivity)
+
+    # Add sentiment scores as new columns to the DataFrame
+    user_df['Sentiment Polarity'] = polarities
+    user_df['Sentiment Subjectivity'] = subjectivities
+
+    return user_df
+
+# Example usage:
+# selected_user = 'User1'
+# sentiment_df = sentiment_analysis_df(selected_user, df)
+
+
+
+
+
 
