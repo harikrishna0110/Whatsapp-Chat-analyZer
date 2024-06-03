@@ -56,12 +56,20 @@ def generate_pdf(data_dict, output_file, images):
     with open(output_file, "wb") as f:
         f.write(buffer.getvalue())
 
-def display_initial_message():
+
+def display_initial_message(theme='dark'):
     st.warning("Your privacy is our priority: No data is stored, and your information remains 100% secure.")
+    if theme == 'dark':
+        background_color = "#00008B"
+        text_color = "#FFFFFF"
+    else:
+        background_color = "#FFFFFF"
+        text_color = "#000000"
+
     st.markdown(
-        """
+        f"""
         <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
-            <div style="text-align: center; border: 2px solid #00008B; padding: 20px; border-radius: 10px; background-color: #00008B; color: #FFFFFF; box-shadow: 0px 0px 10px rgba(0,0,0,0.1);">
+            <div style="text-align: center; border: 2px solid {background_color}; padding: 20px; border-radius: 10px; background-color: {background_color}; color: {text_color}; box-shadow: 0px 0px 10px rgba(0,0,0,0.1);">
                 <h2>Browse a file and click on 'Show Analysis' to get the detailed report.</h2>
             </div>
         </div>
