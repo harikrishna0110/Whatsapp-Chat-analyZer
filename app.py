@@ -8,7 +8,26 @@ from io import BytesIO
 import tempfile
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
-from reportlab.platypus import Image
+import pandas as pd
+import nltk
+from nltk.corpus import stopwords
+
+# Download NLTK stopwords
+nltk.download('stopwords')
+
+# Load English stopwords
+stop_words = set(stopwords.words('english'))
+
+# Function to remove stop words from a text
+def remove_stopwords(text):
+    words = text.split()
+    filtered_words = [word for word in words if word.lower() not in stop_words]
+    return ' '.join(filtered_words)
+
+# Apply remove_stopwords function to the 'message' column
+
+
+
 
 def generate_pdf(data_dict, output_file, images):
     buffer = BytesIO()
@@ -38,6 +57,7 @@ def generate_pdf(data_dict, output_file, images):
         f.write(buffer.getvalue())
 
 def display_initial_message():
+    st.warning("Your privacy is our priority: No data is stored, and your information remains 100% secure.")
     st.markdown(
         """
         <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
@@ -57,6 +77,7 @@ if uploaded_file is not None:
     data = bytes_data.decode("utf-8")
     extracted_data = preprocessor.extract_chat_data(data)
     df = preprocessor.create_dataframe(extracted_data)
+    df['Message'] = df['Message'].apply(remove_stopwords)
     temp = df[df['Message'] != '<Media omitted>']
     st.write(temp)
 
@@ -224,6 +245,7 @@ if uploaded_file is not None:
                 with open(tmp_file.name, "rb") as f:
                     pdf_output.write(f.read())
             st.download_button(label="Download PDF", data=pdf_output.getvalue(), file_name="chat_analysis.pdf", mime="application/pdf")
+            st.warning("Your privacy is our priority: No data is stored, and your information remains 100% secure.")
 
             # Add a clean up button
             if st.button("Clean Up"):

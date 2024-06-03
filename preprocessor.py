@@ -31,7 +31,7 @@ def extract_chat_data(chat_data):
     return messages
 
 
-import pandas as pd
+
 
 def create_dataframe(messages):
     df = pd.DataFrame(messages, columns=['Date', 'Time', 'Sender', 'Message'])
