@@ -8,3 +8,5 @@ emoji
 regex
 textblob
 reportlab
+nltk
+zipfile
